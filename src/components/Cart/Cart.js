@@ -1,10 +1,11 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 const Cart = (props) => {
   const cart = props.cart;
   // Product Price
   const productPrice = cart.reduce(
-    (productPrice, product) => productPrice + product.price,
+    (productPrice, product) => productPrice + product.price * product.quantity,
     0
   );
 
@@ -54,6 +55,8 @@ const Cart = (props) => {
       <p>Shipping Cost: ${formatNumber(shippingCost)}</p>
       <p>Tax + VAT: ${formatNumber(tax)}</p>
       <p>Total Price: ${formatNumber(totalPrice)}</p>
+      <br />
+      {props.children}
     </div>
   );
 };
