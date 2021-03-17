@@ -13,11 +13,7 @@ const Review = () => {
   const [reviewCart, setReviewCart] = useState([]);
   const [orderPlaced, setOrderPlaced] = useState(false);
 
-  const handlePlaceOrder = () => {
-    setReviewCart([]);
-    setOrderPlaced(true);
-    processOrder();
-  };
+  const handleProceedToCheckout = () => {};
   useEffect(() => {
     // reviewCart
     const savedCart = getDatabaseCart();
@@ -55,8 +51,8 @@ const Review = () => {
 
       <div className="cart-container">
         <Cart cart={reviewCart}>
-          <button onClick={handlePlaceOrder} className="main-button">
-            Place Order
+          <button onClick={handleProceedToCheckout} className="main-button">
+            Proceed To Checkout
           </button>
         </Cart>
       </div>
