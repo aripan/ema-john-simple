@@ -8,12 +8,16 @@ import fakeData from "../../fakeData";
 import ReviewItem from "../ReviewItem/ReviewItem";
 import Cart from "../Cart/Cart";
 import happyImage from "../../images/giphy.gif";
+import { useHistory } from "react-router";
 
 const Review = () => {
   const [reviewCart, setReviewCart] = useState([]);
   const [orderPlaced, setOrderPlaced] = useState(false);
+  const history = useHistory();
 
-  const handleProceedToCheckout = () => {};
+  const handleProceedToCheckout = () => {
+    history.push("/shipment");
+  };
   useEffect(() => {
     // reviewCart
     const savedCart = getDatabaseCart();

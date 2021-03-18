@@ -1,8 +1,10 @@
-import React from "react";
+import React, { useContext } from "react";
 import firebase from "firebase/app";
 import "firebase/auth";
 import { firebaseConfig } from "./firebase.config";
 import { useState } from "react";
+import { UserContext } from "../../App";
+import { useHistory, useLocation } from "react-router";
 
 //! to solve: Firebase App named '[DEFAULT]' already exists (app/duplicate-app)
 if (!firebase.apps.length) {
@@ -11,7 +13,11 @@ if (!firebase.apps.length) {
 // firebase.initializeApp(firebaseConfig);
 
 function Login() {
+  const history = useHistory();
+  const location = useLocation();
+  let { from } = location.state || { from: { pathname: "/" } };
   const [newUser, setNewUser] = useState(false);
+  const [loggedInUser, setLoggedInUser] = useContext(UserContext);
   const [user, setUser] = useState({
     isSignedIn: false,
     name: "",
@@ -98,29 +104,42 @@ function Login() {
             newUserInfo.error = "";
             newUserInfo.success = "User successfully registered";
             setUser(newUserInfo);
+            setLoggedInUser(newUserInfo);
           })
           .catch((error) => {
             const newUserInfo = { ...user };
             newUserInfo.error = error.message;
             newUserInfo.success = "";
             setUser(newUserInfo);
+            setLoggedInUser(newUserInfo);
           });
       }
-
-      firebase
-        .auth()
-        .signInWithEmailAndPassword(user.email, user.password)
-        .then((res) => {
-          console.log(res);
-        })
-        .catch((error) => {
-          var errorCode = error.code;
-          var errorMessage = error.message;
-        });
+      if (!newUser) {
+        firebase
+          .auth()
+          .signInWithEmailAndPassword(user.email, user.password)
+          .then((res) => {
+            const newUserInfo = { ...user };
+            newUserInfo.error = "";
+            newUserInfo.success = "User successfully loggedIn";
+            setUser(newUserInfo);
+            setLoggedInUser(newUserInfo);
+            history.replace(from);
+          })
+          .catch((error) => {
+            const newUserInfo = { ...user };
+            newUserInfo.error = error.message;
+            newUserInfo.success = "";
+            setUser(newUserInfo);
+            setLoggedInUser(newUserInfo);
+          });
+      }
     }
 
     event.preventDefault();
   };
+
+  console.log("loggedInUser", loggedInUser);
 
   // Facebook Login
 
@@ -206,9 +225,7 @@ function Login() {
       </form>
       <p style={{ color: "red" }}>{user.error}</p>
       <p style={{ color: "green" }}>{user.success}</p>
-      <div>
-        <p>{user.email}</p>
-      </div>
+
       <br />
       <br />
       <br />
